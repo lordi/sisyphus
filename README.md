@@ -15,6 +15,8 @@ You can use Sisyphus to
  * auto-restart your development server
  * auto-restart your unsuccessful shell command until it succeeds.
 
+It is very convenient to see the output of your program as soon as you save it in your editor. But remember: Your actions might put Sisyphus in an existential crisis where it is faced with questions about the absurdity of life.
+
 Both Python 2.x and 3.x are supported.
 
 Ignore patterns
@@ -29,9 +31,9 @@ Sisyphus will ignore changes in files matching any regex pattern found in the fo
 Installation
 ------------
 
-    git clone https://github.com/lordi/sisyphus.git
+    git clone https://github.com/lordi/sisyphus
     cd sisyphus
-    ln -s sisyphus.py ~/bin/sisyphus
+    ln -s $PWD/sisyphus.py ~/bin/sisyphus
 
 Examples
 --------
