@@ -43,7 +43,7 @@ class Sisyphus(pyinotify.ProcessEvent):
         self.dirty = True
         self.start_if_dirty()
 
-    def _terminate(self):
+    def terminate(self):
         if self.proc != None and self.proc.pid != None:
             os.killpg(self.proc.pid, signal.SIGTERM)
 
@@ -75,7 +75,7 @@ class Sisyphus(pyinotify.ProcessEvent):
             return
         else:
             print("<*> Detected change in:", event.pathname)
-            self._terminate()
+            self.terminate()
             self.dirty = True
             self.start_if_dirty()
 
@@ -94,7 +94,7 @@ if __name__ == '__main__':
     sisyphus = Sisyphus(options, cmd=args)
 
     def on_sigint(signum, frame):
-        sisyphus._terminate()
+        sisyphus.terminate()
         sys.exit(130)
 
     signal.signal(signal.SIGINT, on_sigint)
