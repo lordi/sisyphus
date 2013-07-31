@@ -53,7 +53,7 @@ class Sisyphus(pyinotify.ProcessEvent):
             print("<==", future, future.result())
         self.start_if_dirty()
 
-    def worker_thread(self, *args, **kwargs):
+    def worker_thread(self):
         self.proc = subprocess.Popen(self.cmd, preexec_fn=os.setpgrp)
         self.proc.wait()
         return self.proc.returncode
@@ -63,8 +63,7 @@ class Sisyphus(pyinotify.ProcessEvent):
             if self.options.verbose:
                 print("==> Executing command: ", self.cmd)
 
-            self.future = self.pool.submit(self.worker_thread, \
-                    self.cmd, preexec_fn=os.setpgrp, shell=True)
+            self.future = self.pool.submit(self.worker_thread)
             self.future.add_done_callback(self.on_done)
             self.dirty = False
             if self.options.verbose:
