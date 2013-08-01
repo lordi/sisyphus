@@ -22,7 +22,7 @@ EXCL_FILES = [
     os.path.join(os.getcwd(), '.sisignore')
 ]
 EXCL_PATTERNS = set(itertools.chain(*[open(f).readlines() for f in EXCL_FILES if os.path.exists(f)]))
-EXCL_RE = [re.compile(s.strip()) for s in EXCL_PATTERNS]
+EXCL_RE = [re.compile(s.strip()) for s in EXCL_PATTERNS if len(s) > 0]
 
 class Sisyphus(pyinotify.ProcessEvent):
     def __init__(self, options, *args, **kwargs):
