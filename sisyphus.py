@@ -25,11 +25,14 @@ EXCL_FILES = [
 class Sisyphus(pyinotify.ProcessEvent):
     def __init__(self, options, *args, **kwargs):
         self.options = options
+        if self.options.silent:
+            self.options.verbose = False
         self._load_excl_patterns()
+        self.directory = os.path.abspath(self.options.directory)
         super(Sisyphus, self).__init__(*args, **kwargs)
         self.wm = pyinotify.WatchManager()
         self.notifier = pyinotify.Notifier(self.wm, default_proc_fun=self)
-        self.wm.add_watch(os.getcwd(), MASK, rec=True, auto_add=True)
+        self.wm.add_watch(self.directory, MASK, rec=True, auto_add=True)
         signal.signal(signal.SIGINT, self.on_sigint)
 
     def run(self):
@@ -77,7 +80,8 @@ class Sisyphus(pyinotify.ProcessEvent):
         if any([rgx.search(event.pathname) for rgx in self.excl_re]):
             return
         else:
-            print("<*> Detected change in:", event.pathname)
+            if not self.options.silent:
+                print("<*> Detected change in:", event.pathname, event)
             self.terminate()
             self.dirty = True
             self.start_if_dirty()
@@ -86,12 +90,22 @@ class Sisyphus(pyinotify.ProcessEvent):
         excl_lines = [open(f).readlines() for f in EXCL_FILES if os.path.exists(f)]
         excl_patterns = [s.strip() for s in set(itertools.chain(*excl_lines)) if len(s) > 0]
         self.excl_re = [re.compile(s) for s in excl_patterns]
+        #incl_patterns = []
+        #if self.options.ext:
+        #    print (self.options.ext.split(','))
 
 if __name__ == '__main__':
     parser = OptionParser("usage: %prog [options] cmd")
     parser.allow_interspersed_args = False
     parser.add_option("-v", "--verbose", dest="verbose", action="store_true",
-            default=False, help="be verbose [default: false]")
+            default=False,
+            help="be verbose")
+    parser.add_option("-s", "--silent", dest="silent", action="store_true",
+            default=False,
+            help="output nothing besides the child's output")
+    parser.add_option("-d", "--dir", dest="directory", action="store",
+            default='.',
+            help="directory to monitor recursively [default=%default]")
 
     (options, args) = parser.parse_args()
 
