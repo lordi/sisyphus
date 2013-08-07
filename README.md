@@ -13,6 +13,7 @@ You can use Sisyphus to
  * auto-compile your program
  * auto-run your test suite
  * auto-restart your development server
+ * auto-refresh your browser (i.e., via [MozRepl](https://github.com/bard/mozrepl/wiki)) when doing web development
  * auto-restart your unsuccessful shell command until it succeeds.
 
 It is very convenient to see the output of your program as soon as you save it in your editor. But remember: Your actions might put Sisyphus in an existential crisis where it is faced with questions about the absurdity of life.
