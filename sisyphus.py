@@ -77,6 +77,8 @@ class Sisyphus(pyinotify.ProcessEvent):
                 print("==>", self.future)
 
     def process_IN_MODIFY(self, event):
+        if len(self.incl_re) > 0 and not any([rgx.search(event.pathname) for rgx in self.incl_re]):
+            return
         if any([rgx.search(event.pathname) for rgx in self.excl_re]):
             return
         else:
@@ -90,9 +92,9 @@ class Sisyphus(pyinotify.ProcessEvent):
         excl_lines = [open(f).readlines() for f in EXCL_FILES if os.path.exists(f)]
         excl_patterns = [s.strip() for s in set(itertools.chain(*excl_lines)) if len(s) > 0]
         self.excl_re = [re.compile(s) for s in excl_patterns]
-        #incl_patterns = []
-        #if self.options.ext:
-        #    print (self.options.ext.split(','))
+        incl_ext = [ext.strip('.,') for ext in self.options.extensions.split(',')]
+        incl_patterns = ['\.{0}$'.format(ext) for ext in incl_ext if len(ext) > 0]
+        self.incl_re = [re.compile(s) for s in incl_patterns]
 
 if __name__ == '__main__':
     parser = OptionParser("usage: %prog [options] cmd")
@@ -106,6 +108,9 @@ if __name__ == '__main__':
     parser.add_option("-d", "--dir", dest="directory", action="store",
             default='.',
             help="directory to monitor recursively [default=%default]")
+    parser.add_option("-e", "--ext", dest="extensions", action="store",
+            default='',
+            help="file extensions to monitor, comma-separated list")
 
     (options, args) = parser.parse_args()
 
