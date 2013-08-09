@@ -6,7 +6,7 @@ About
 
 Sisyphus is a little helper script to re-run arbitrary commands over and over again. Poor Sisyphus will execute the argument list as a command, monitor the current directory for changes and re-run the command each time a modification is detected. Also, it will terminate a long-running command when a modification is detected and start over.
 
-It is based on the pyinotify example script "autocompile.py".
+It is based on the pyinotify example script "[autocompile.py](https://github.com/seb-m/pyinotify/blob/master/python2/examples/autocompile.py)".
 
 You can use Sisyphus to
 
@@ -18,7 +18,12 @@ You can use Sisyphus to
 
 It is very convenient to see the output of your program as soon as you save it in your editor. But remember: Your actions might put Sisyphus in an existential crisis where it is faced with questions about the absurdity of life.
 
-Both Python 2.x and 3.x are supported.
+Requirements
+------------
+
+ * Linux ≥ 2.6.13
+ * [pyinotify](https://github.com/seb-m/pyinotify)
+ * Both Python 2.x and 3.x are supported
 
 Ignore patterns
 ---------------
