@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python2
 from __future__ import print_function
 import subprocess
 import sys
@@ -21,6 +21,9 @@ EXCL_FILES = [
     os.path.expanduser('~/.sisignore'),
     os.path.join(os.getcwd(), '.sisignore')
 ]
+
+def clear_screen():
+    subprocess.Popen("cls" if os.name == 'nt' else "clear").wait()
 
 class Sisyphus(pyinotify.ProcessEvent):
     def __init__(self, options, *args, **kwargs):
@@ -61,6 +64,8 @@ class Sisyphus(pyinotify.ProcessEvent):
             os.killpg(self.proc.pid, signal.SIGTERM)
 
     def worker_thread(self):
+        if self.options.clear:
+            clear_screen()
         self.proc = subprocess.Popen(self.cmd, preexec_fn=os.setpgrp)
         self.proc.wait()
         return self.proc.returncode
@@ -111,6 +116,9 @@ if __name__ == '__main__':
     parser.add_option("-e", "--ext", dest="extensions", action="store",
             default='',
             help="file extensions to monitor, comma-separated list")
+    parser.add_option("-c", "--clear", dest="clear", action="store_true",
+            default='',
+            help="Clear the screen before running the program")
 
     (options, args) = parser.parse_args()
 
