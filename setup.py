@@ -1,5 +1,5 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import logging
 import os
 import subprocess
 import sys
@@ -11,28 +11,25 @@ except ImportError:
 # Have to do this after importing setuptools, which monkey patches distutils.
 from distutils.extension import Extension
 
-logging.basicConfig()
-log = logging.getLogger()
-
 version = '0.1.0'
 
 setup(
     name='sis',
     version=version,
-    requires_python='>=2.6',
     description="Sisyphus command runner",
-    license='BSD',
+    license='MIT',
     author='Hannes Gräuler',
     author_email='hgraeule@uos.de',
     url='http://github.com/lordi/sisyphus',
     packages=['sis'],
     package_dir={'sis': 'src/sis'},
     scripts=['scripts/sis'],
-    install_requires='pyinotify',
+    install_requires=['pyinotify', 'futures'],
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: BSD License',
+        'Environment :: Console',
+        'License :: OSI Approved :: MIT License',
         'Operating System :: Linux',
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 3',
