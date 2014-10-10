@@ -1,9 +1,6 @@
 Sisyphus
 ========
 
-About
------
-
 Sisyphus is a little helper script to re-run arbitrary commands over and over again. Poor Sisyphus will execute the argument list as a command, monitor the current directory for changes and re-run the command each time a modification is detected. Also, it will terminate a long-running command when a modification is detected and start over.
 
 It is based on the pyinotify example script "[autocompile.py](https://github.com/seb-m/pyinotify/blob/master/python2/examples/autocompile.py)".
@@ -16,7 +13,7 @@ You can use Sisyphus to
  * auto-refresh your browser (i.e., via [MozRepl](https://github.com/bard/mozrepl/wiki)) when doing web development
  * auto-restart your unsuccessful shell command until it succeeds.
 
-It is very convenient to see the output of your program as soon as you save it in your editor. But remember: Your actions might put Sisyphus in an existential crisis where it is faced with questions about the absurdity of life.
+It can be convenient to see the output of your program as soon as you save it, without leaving your editor. But remember: Your actions might put Sisyphus in an existential crisis where it is faced with questions about the absurdity of life.
 
 Requirements
 ------------
