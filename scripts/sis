@@ -1,0 +1,30 @@
+#!/usr/bin/env python
+import sys
+from sis import Sisyphus
+from optparse import OptionParser
+
+if __name__ == '__main__':
+    parser = OptionParser("usage: %prog [options] cmd")
+    parser.allow_interspersed_args = False
+    parser.add_option("-v", "--verbose", dest="verbose", action="store_true",
+            default=False,
+            help="be verbose")
+    parser.add_option("-s", "--silent", dest="silent", action="store_true",
+            default=False,
+            help="output nothing besides the child's output")
+    parser.add_option("-d", "--dir", dest="directory", action="store",
+            default='.',
+            help="directory to monitor recursively [default=%default]")
+    parser.add_option("-e", "--ext", dest="extensions", action="store",
+            default='',
+            help="file extensions to monitor, comma-separated list")
+
+    (options, args) = parser.parse_args()
+
+    if len(args) == 0:
+        parser.print_help()
+        sys.exit(1)
+
+    sisyphus = Sisyphus(options, cmd=args)
+    sisyphus.run()
+

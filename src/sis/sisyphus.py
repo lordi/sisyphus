@@ -9,7 +9,7 @@ import pyinotify
 import re
 import time
 import itertools
-from optparse import OptionParser
+
 # to install run `pip install futures` on Python <3.2
 from concurrent.futures import ThreadPoolExecutor as Pool
 import logging
@@ -21,6 +21,10 @@ EXCL_FILES = [
     os.path.expanduser('~/.sisignore'),
     os.path.join(os.getcwd(), '.sisignore')
 ]
+
+STATUS = '\033[36m'
+FAIL = '\033[91m'
+ENDC = '\033[0m'
 
 class Sisyphus(pyinotify.ProcessEvent):
     def __init__(self, options, *args, **kwargs):
@@ -52,6 +56,7 @@ class Sisyphus(pyinotify.ProcessEvent):
 
     def on_done(self, future):
         self.proc = None
+        print(STATUS + "<*> Program returned with exit code", future.result(), ENDC)
         if self.options.verbose:
             print("<==", future, future.result())
         self.start_if_dirty()
@@ -83,7 +88,7 @@ class Sisyphus(pyinotify.ProcessEvent):
             return
         else:
             if not self.options.silent:
-                print("<*> Detected change in:", event.pathname, event)
+                print(STATUS + "<*> Detected change in:", event.pathname, ENDC)
             self.terminate()
             self.dirty = True
             self.start_if_dirty()
@@ -96,28 +101,4 @@ class Sisyphus(pyinotify.ProcessEvent):
         incl_patterns = ['\.{0}$'.format(ext) for ext in incl_ext if len(ext) > 0]
         self.incl_re = [re.compile(s) for s in incl_patterns]
 
-if __name__ == '__main__':
-    parser = OptionParser("usage: %prog [options] cmd")
-    parser.allow_interspersed_args = False
-    parser.add_option("-v", "--verbose", dest="verbose", action="store_true",
-            default=False,
-            help="be verbose")
-    parser.add_option("-s", "--silent", dest="silent", action="store_true",
-            default=False,
-            help="output nothing besides the child's output")
-    parser.add_option("-d", "--dir", dest="directory", action="store",
-            default='.',
-            help="directory to monitor recursively [default=%default]")
-    parser.add_option("-e", "--ext", dest="extensions", action="store",
-            default='',
-            help="file extensions to monitor, comma-separated list")
-
-    (options, args) = parser.parse_args()
-
-    if len(args) == 0:
-        parser.print_help()
-        sys.exit(1)
-
-    sisyphus = Sisyphus(options, cmd=args)
-    sisyphus.run()
 
