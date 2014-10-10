@@ -11,7 +11,7 @@ except ImportError:
 # Have to do this after importing setuptools, which monkey patches distutils.
 from distutils.extension import Extension
 
-version = '0.1.0'
+version = '0.1.1'
 
 setup(
     name='sis',
