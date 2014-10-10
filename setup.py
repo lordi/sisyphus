@@ -20,6 +20,7 @@ setup(
     license='MIT',
     author='Hannes Gräuler',
     author_email='hgraeule@uos.de',
+    download_url='https://github.com/lordi/sisyphus/tarball/v' + version,
     url='http://github.com/lordi/sisyphus',
     packages=['sis'],
     package_dir={'sis': 'src/sis'},
