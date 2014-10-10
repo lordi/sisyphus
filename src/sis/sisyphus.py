@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python2
 from __future__ import print_function
 import subprocess
 import sys
@@ -25,6 +25,9 @@ EXCL_FILES = [
 STATUS = '\033[36m'
 FAIL = '\033[91m'
 ENDC = '\033[0m'
+
+def clear_screen():
+    subprocess.Popen("cls" if os.name == 'nt' else "clear").wait()
 
 class Sisyphus(pyinotify.ProcessEvent):
     def __init__(self, options, *args, **kwargs):
@@ -56,7 +59,8 @@ class Sisyphus(pyinotify.ProcessEvent):
 
     def on_done(self, future):
         self.proc = None
-        print(STATUS + "<*> Program returned with exit code", future.result(), ENDC)
+        if not self.options.silent:
+            print(STATUS + "<*> Program returned with exit code", future.result(), ENDC)
         if self.options.verbose:
             print("<==", future, future.result())
         self.start_if_dirty()
@@ -66,6 +70,8 @@ class Sisyphus(pyinotify.ProcessEvent):
             os.killpg(self.proc.pid, signal.SIGTERM)
 
     def worker_thread(self):
+        if self.options.clear:
+            clear_screen()
         self.proc = subprocess.Popen(self.cmd, preexec_fn=os.setpgrp)
         self.proc.wait()
         return self.proc.returncode
@@ -100,5 +106,4 @@ class Sisyphus(pyinotify.ProcessEvent):
         incl_ext = [ext.strip('.,') for ext in self.options.extensions.split(',')]
         incl_patterns = ['\.{0}$'.format(ext) for ext in incl_ext if len(ext) > 0]
         self.incl_re = [re.compile(s) for s in incl_patterns]
-
 

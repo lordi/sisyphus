@@ -18,6 +18,9 @@ if __name__ == '__main__':
     parser.add_option("-e", "--ext", dest="extensions", action="store",
             default='',
             help="file extensions to monitor, comma-separated list")
+    parser.add_option("-c", "--clear", dest="clear", action="store_true",
+            default='',
+            help="Clear the screen before running the program")
 
     (options, args) = parser.parse_args()
 
