@@ -25,6 +25,17 @@ Requirements
  * [pyinotify](https://github.com/seb-m/pyinotify)
  * Both Python 2.x and 3.x are supported
 
+Installation
+------------
+
+    pip install sis
+
+Examples
+--------
+
+    sis -d src make
+    sis -e hs cabal test
+
 Ignore patterns
 ---------------
 
@@ -34,16 +45,4 @@ Sisyphus will ignore changes in files matching any regex pattern found in the fo
  * ~/.sisignore
  * .sisignore
 
-Installation
-------------
-
-    git clone https://github.com/lordi/sisyphus
-    cd sisyphus
-    ln -s $PWD/sisyphus.py ~/bin/sisyphus
-
-Examples
---------
-
-    sisyphus make
-    sisyphus cabal test
 
