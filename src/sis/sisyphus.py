@@ -13,7 +13,7 @@ import itertools
 # to install run `pip install futures` on Python <3.2
 from concurrent.futures import ThreadPoolExecutor as Pool
 import logging
-logging.basicConfig()
+logger = logging.getLogger(__name__)
 
 MASK = pyinotify.IN_MODIFY
 EXCL_FILES = [
@@ -22,17 +22,13 @@ EXCL_FILES = [
     os.path.join(os.getcwd(), '.sisignore')
 ]
 
-STATUS = '\033[36m'
-FAIL = '\033[91m'
-ENDC = '\033[0m'
-
 def clear_screen():
     subprocess.Popen("cls" if os.name == 'nt' else "clear").wait()
 
 class Sisyphus(pyinotify.ProcessEvent):
     def __init__(self, options, *args, **kwargs):
         self.options = options
-        if self.options.silent:
+        if self.options.quiet:
             self.options.verbose = False
         self._load_excl_patterns()
         self.directory = os.path.abspath(self.options.directory)
@@ -59,10 +55,8 @@ class Sisyphus(pyinotify.ProcessEvent):
 
     def on_done(self, future):
         self.proc = None
-        if not self.options.silent:
-            print(STATUS + "<*> Program returned with exit code", future.result(), ENDC)
-        if self.options.verbose:
-            print("<==", future, future.result())
+        logger.info("Program returned with exit code %d", future.result())
+        logger.debug("<== %s (%s)", future, future.result())
         self.start_if_dirty()
 
     def terminate(self):
@@ -78,14 +72,10 @@ class Sisyphus(pyinotify.ProcessEvent):
 
     def start_if_dirty(self):
         if self.dirty and (self.future == None or not self.future.running()):
-            if self.options.verbose:
-                print("==> Executing command: ", self.cmd)
-
+            logger.debug("Executing command: %s", self.cmd)
             self.future = self.pool.submit(self.worker_thread)
             self.future.add_done_callback(self.on_done)
             self.dirty = False
-            if self.options.verbose:
-                print("==>", self.future)
 
     def process_IN_MODIFY(self, event):
         if len(self.incl_re) > 0 and not any([rgx.search(event.pathname) for rgx in self.incl_re]):
@@ -93,8 +83,7 @@ class Sisyphus(pyinotify.ProcessEvent):
         if any([rgx.search(event.pathname) for rgx in self.excl_re]):
             return
         else:
-            if not self.options.silent:
-                print(STATUS + "<*> Detected change in:", event.pathname, ENDC)
+            logger.info("Restart due to file modification: %s", event.pathname)
             self.terminate()
             self.dirty = True
             self.start_if_dirty()

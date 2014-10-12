@@ -1,15 +1,19 @@
 #!/usr/bin/env python
 import sys
+import logging
 from sis import Sisyphus
 from optparse import OptionParser
+
+def colorize(string, color=36):
+    return '\033[{color}m{0}\033[0m'.format(string, color=color)
 
 if __name__ == '__main__':
     parser = OptionParser("usage: %prog [options] cmd")
     parser.allow_interspersed_args = False
-    parser.add_option("-v", "--verbose", dest="verbose", action="store_true",
+    parser.add_option("", "--debug", dest="debug", action="store_true",
             default=False,
-            help="be verbose")
-    parser.add_option("-s", "--silent", dest="silent", action="store_true",
+            help="debug output")
+    parser.add_option("-q", "--quiet", dest="quiet", action="store_true",
             default=False,
             help="output nothing besides the child's output")
     parser.add_option("-d", "--dir", dest="directory", action="store",
@@ -23,6 +27,17 @@ if __name__ == '__main__':
             help="Clear the screen before running the program")
 
     (options, args) = parser.parse_args()
+
+    if not options.quiet:
+        # set up logger for the desired level
+        log_level = logging.DEBUG if options.debug else logging.INFO
+        ch = logging.StreamHandler()
+        ch.setLevel(log_level)
+        formatter = logging.Formatter(colorize('%(levelname)s - %(message)s'))
+        ch.setFormatter(formatter)
+        logger = logging.getLogger()
+        logger.setLevel(log_level)
+        logger.addHandler(ch)
 
     if len(args) == 0:
         parser.print_help()
