@@ -64,7 +64,8 @@ class Sisyphus(pyinotify.ProcessEvent):
     def worker_thread(self):
         if self.options.clear:
             clear_screen()
-        self.proc = subprocess.Popen(self.cmd, preexec_fn=os.setpgrp)
+        cmd = " ".join(self.cmd) if self.options.shell else self.cmd
+        self.proc = subprocess.Popen(cmd, preexec_fn=os.setpgrp, shell=self.options.shell)
         self.proc.wait()
         return self.proc.returncode
 
