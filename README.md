@@ -31,7 +31,10 @@ Examples
 --------
 
     sis -d src make
+
     sis -e hs cabal test
+
+    sis -s 'lynx -dump http://my-web-app/'
 
 Ignore patterns
 ---------------

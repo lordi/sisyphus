@@ -11,12 +11,13 @@ except ImportError:
 # Have to do this after importing setuptools, which monkey patches distutils.
 from distutils.extension import Extension
 
-version = '0.1.1'
+version = '0.1.3'
 
 setup(
     name='sis',
     version=version,
     description="Sisyphus command runner",
+    long_description=open('README.md', 'rt').read(),
     license='MIT',
     author='Hannes Gräuler',
     author_email='hgraeule@uos.de',
